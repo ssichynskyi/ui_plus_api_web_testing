@@ -1,0 +1,28 @@
+---
+API_HOSTS:
+  test:
+    url: 'http://localhost:8888/aut_site/wp-json/wc/v3/'
+  stage:
+    url:
+  prod:
+    url:
+
+DB_HOSTS:
+  test:
+    url: 'http://localhost'
+    db: aut_site_db
+    table_prefix: wp_
+    socket:
+    port: 8889
+  stage:
+    url:
+    db:
+    table_prefix:
+    socket:
+    port:
+  prod:
+    url:
+    db:
+    table_prefix:
+    socket:
+    port:
