@@ -6,6 +6,11 @@ name = "pypi"
 [packages]
 selenium-base = "*"
 pymysql = "*"
+pyyaml = "*"
+requests = "*"
+requests-oauthlib = "*"
+pytest = "*"
+faker = "*"
 
 [dev-packages]
 
