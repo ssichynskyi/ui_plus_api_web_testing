@@ -1,4 +1,4 @@
-import collections
+from collections.abc import Mapping
 
 
 def merge_dicts(main, complement):
@@ -41,7 +41,7 @@ def merge_dicts(main, complement):
     """
 
     for k, v in complement.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, Mapping):
             result = merge_dicts(main.get(k, {}), v)
             main[k] = result
         else:
