@@ -39,3 +39,6 @@ pipenv install
 ```console
 pytest ...
 ```
+4. ToDo:
+- add data model validation vs. specs. (very first test case)
+- separate local and global configs
