@@ -11,6 +11,7 @@ requests = "*"
 requests-oauthlib = "*"
 pytest = "*"
 faker = "*"
+pydantic = "*"
 
 [dev-packages]
 
