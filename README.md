@@ -1,4 +1,4 @@
-# Look-at-me project
+# Hey, look-at-me project :-)
 This project demonstrates some of my skills in automated Web testing.
 
 ## AUT
@@ -40,5 +40,5 @@ pipenv install
 pytest ...
 ```
 4. ToDo:
-- add data model validation vs. specs. (very first test case)
-- separate local and global configs
+- add smoke test -> host availability
+- add commandline arguments for pytest

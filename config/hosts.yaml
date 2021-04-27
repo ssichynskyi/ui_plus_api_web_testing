@@ -1,19 +1,11 @@
 ---
 API_HOSTS:
-  test:
-    url: 'http://192.168.178.49:8888/aut_site/wp-json/wc/v3/'
   stage:
     url:
   prod:
     url:
 
 DB_HOSTS:
-  test:
-    url: 'http://192.168.178.49'
-    db: aut_site_db
-    table_prefix: wp_
-    socket:
-    port: 8889
   stage:
     url:
     db:
