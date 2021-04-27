@@ -1,7 +1,7 @@
 import os
 
 
-class UIUser:
+class BasicAuthUser:
     def __init__(self, login, password):
         self.login = login
         self.password = password
@@ -13,7 +13,7 @@ class APIUser:
         self.customer_secret = customer_secret
 
 
-normal_ui_user = UIUser(
+normal_ui_user = BasicAuthUser(
     login=os.environ['STANDARD_USER_LOGIN'],
     password=os.environ['STANDARD_USER_PASSWORD']
 )
@@ -26,4 +26,9 @@ readonly_api_user = APIUser(
 read_write_api_user = APIUser(
     customer_key=os.environ['READ_WRITE_API_CONSUMER_KEY'],
     customer_secret=os.environ['READ_WRITE_API_CONSUMER_SECRET']
+)
+
+db_user = BasicAuthUser(
+    login=os.environ['DB_LOGIN'],
+    password=os.environ['DB_PASSWORD']
 )
