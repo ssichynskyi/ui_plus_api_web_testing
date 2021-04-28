@@ -37,7 +37,7 @@ class CustomerResponse(BaseModel):
     _links: Dict[str, List[Dict[str, str]]]
 
 
-class CustomerError(BaseModel):
+class ErrorResponse(BaseModel):
     class Data(BaseModel):
         status = int
     code: str
