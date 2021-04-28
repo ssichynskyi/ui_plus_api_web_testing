@@ -1,68 +1,73 @@
-from typing import Dict, List, Union
+from typing import Optional
 from framework.utilities.db_connector import db
 
 
-class TooManyResultsException(Exception):
-    def __init__(self, msg):
-        super(TooManyResultsException, self).__init__(msg)
+class TooManyDatabaseEntries(Exception):
+    pass
 
 
-class CustomerDAO:
-    def __init__(self):
-        self._basic_query = f"SELECT * FROM wp_users WHERE %c=%s;"
+class TooFewDatabaseEntries(Exception):
+    pass
 
-    def get_by(self, col_name: str, col_value: str) -> List[Dict]:
-        """Get user by column name and value
 
-        Args:
-            col_name: name of the column
-            col_value: value of the column
+class BasicCustomerDAO:
 
-        Returns:
-            List of Dicts where:
-                - list member is row
-                - Dict keys: columns names
-                - Dict values: row X col value
+    basic_query = f"SELECT * FROM wp_users WHERE %c;"
 
-        """
-        query = self._basic_query.replace('%c', col_name)
-        return db.execute_sql(query, [col_value])
-
-    def _get_user_unique(self, col_name, value):
-        """Same as get_by, but for unique entries only"""
-        results = self.get_by(col_name, value)
+    @staticmethod
+    def _get(query):
+        results = db.execute_sql(query)
         if len(results) > 1:
-            msg = f'Unexpected output. Found {len(results)} entries, 1 expected'
-            raise TooManyResultsException(msg)
+            msg = f'Too many results. Found {len(results)} entries, 1 expected. SQL: {query}'
+            raise TooManyDatabaseEntries(msg)
         elif len(results) == 0:
-            return None
+            msg = f'No entries found, 1 expected. SQL: {query}'
+            raise TooFewDatabaseEntries(msg)
         else:
             return results[0]
 
-    def get_by_username(self, username: str) -> Union[Dict, None]:
-        """Get user by username
+    def __new__(cls, *args, **kwargs):
+        if not (args or kwargs):
+            return None
+        else:
+            return super().__new__(cls)
 
-        Args:
-            username: username -> user_nicename (in db)
+    def __init__(
+            self,
+            user_id: Optional[int] = None,
+            username: Optional[str] = None,
+            email: Optional[str] = None,
+            **kwargs
+    ):
+        kwa = dict()
+        if user_id:
+            kwa['id'] = user_id
+        if username:
+            kwa['user_login'] = username
+        if email:
+            kwa['user_email'] = email
+        kwargs.update(kwa)
+        params = [f'{k}=\'{str(v)}\'' for k, v in kwargs.items()]
+        where_params = ' and '.join(params)
+        self.query = self.basic_query.replace('%c', where_params)
+        self._dict = self._get(self.query)
 
-        Returns:
-            User as Dict or None
+    @property
+    def username(self):
+        return self._dict['user_login']
 
-        Raises:
-            TooManyResultsException
-        """
-        return self._get_user_unique('user_nicename', username)
+    @property
+    def id(self):
+        return self._dict['ID']
 
-    def get_by_email(self, email: str) -> Union[Dict, None]:
-        """Get user by email
+    @property
+    def email(self):
+        return self._dict['user_email']
 
-        Args:
-            email: email -> user_email (in db)
+    @property
+    def username(self):
+        return self._dict['user_login']
 
-        Returns:
-            User as Dict or None
-
-        Raises:
-            TooManyResultsException
-        """
-        return self._get_user_unique('user_email', email)
+    @property
+    def registered(self):
+        return self._dict['user_registered']
