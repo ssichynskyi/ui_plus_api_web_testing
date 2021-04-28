@@ -2,12 +2,17 @@
 # make hosts_local.yaml from this file and update with configuration of your local setup
 API_HOSTS:
   local:
-    url: 'http://192.168.178.49:8888/aut_site/wp-json/wc/v3/'
+    url: 'http://192.168.192.168'
+    ip: '192.168.192.168'
+    socket:
+    port:
+    hierarchy: '/aut_site/wp-json/wc/v3/'
 
 DB_HOSTS:
   local:
-    url: 'http://192.168.178.49'
-    db: aut_site_db
-    table_prefix: wp_
+    url: 'localhost'
+    ip: '127.0.0.1'
+    schema:
+    table_prefix:
     socket:
-    port: 8889
+    port:

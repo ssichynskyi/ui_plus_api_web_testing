@@ -1,20 +1,30 @@
 ---
 API_HOSTS:
   stage:
-    url:
+    url: 'http://192.168.192.168'
+    ip: '192.168.192.168'
+    socket:
+    port: 8888
+    hierarchy: '/aut_site/wp-json/wc/v3/'
   prod:
-    url:
+    url: 'http://192.168.192.168'
+    ip: '192.168.192.168'
+    socket:
+    port: 8888
+    hierarchy: '/aut_site/wp-json/wc/v3/'
 
 DB_HOSTS:
   stage:
-    url:
-    db:
-    table_prefix:
+    url: 'localhost'
+    ip: '127.0.0.1'
+    schema: aut_site_db
+    table_prefix: wp_
     socket:
-    port:
+    port: 8889
   prod:
-    url:
-    db:
-    table_prefix:
+    url: 'localhost'
+    ip: '127.0.0.1'
+    schema: aut_site_db
+    table_prefix: wp_
     socket:
-    port:
+    port: 8889
