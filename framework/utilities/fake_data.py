@@ -46,3 +46,8 @@ def generate_fake_user() -> dict:
       }
     }
     return payload
+
+
+def generate_filename(extension: str = None) -> str:
+    filename = fake.file_name(extension=extension)
+    return filename.replace('.', f'{fake.date()}.')
