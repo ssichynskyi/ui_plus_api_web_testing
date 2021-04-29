@@ -2,7 +2,8 @@ import pytest
 
 from faker import Faker
 from data_collection.api.data_models.woo_commerce.v3 import CustomerResponse, ErrorResponse
-from framework.utilities.dao.customer_dao import BasicCustomerDAO, TooFewDatabaseEntries
+from framework.utilities.dao.customer_dao import BasicCustomerDAO
+from framework.utilities.dao.exceptions import TooFewDatabaseEntries
 from framework.utilities.fake_data import generate_fake_user
 from tests.conftest import unauthorized_woo_api_client, readonly_woo_api_client, read_write_woo_api_client
 
