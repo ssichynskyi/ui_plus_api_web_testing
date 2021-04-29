@@ -48,19 +48,19 @@ class APICaller:
             data = dumps(data)
         return requests.post(url, data, headers=headers, auth=self._auth, **kwargs)
 
-    def put(self, extension: str, payload: dict, headers: dict = None, **kwargs):
+    def put(self, extension: str, data: dict, headers: dict = None, **kwargs):
         """HTTP PUT request"""
         if not headers:
             headers = {'Content-Type': 'application/json'}
         url = urljoin(self._url, extension)
-        return requests.put(url, dumps(payload), headers=headers, auth=self._auth, **kwargs)
+        return requests.put(url, dumps(data), headers=headers, auth=self._auth, **kwargs)
 
-    def patch(self, extension: str, payload: dict, headers: dict = None, **kwargs):
+    def patch(self, extension: str, data: dict, headers: dict = None, **kwargs):
         """HTTP PATCH request"""
         if not headers:
             headers = {'Content-Type': 'application/json'}
         url = urljoin(self._url, extension)
-        return requests.patch(url, dumps(payload), headers=headers, auth=self._auth, **kwargs)
+        return requests.patch(url, dumps(data), headers=headers, auth=self._auth, **kwargs)
 
     def delete(self, extension: str, params: dict = None, **kwargs):
         """HTTP DELETE request"""
