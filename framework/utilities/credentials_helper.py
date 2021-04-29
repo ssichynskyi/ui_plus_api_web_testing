@@ -8,9 +8,11 @@ class BasicAuthUser:
 
 
 class APIUser:
-    def __init__(self, customer_key, customer_secret):
+    def __init__(self, customer_key, customer_secret, token=None, token_secret=None):
         self.customer_key = customer_key
         self.customer_secret = customer_secret
+        self.token = token
+        self.token_secret = token_secret
 
 
 normal_ui_user = BasicAuthUser(
@@ -18,14 +20,21 @@ normal_ui_user = BasicAuthUser(
     password=os.environ['STANDARD_USER_PASSWORD']
 )
 
-readonly_api_user = APIUser(
+woo_api_readonly_user = APIUser(
     customer_key=os.environ['READONLY_API_CONSUMER_KEY'],
     customer_secret=os.environ['READONLY_API_CONSUMER_SECRET']
 )
 
-read_write_api_user = APIUser(
-    customer_key=os.environ['READ_WRITE_API_CONSUMER_KEY'],
-    customer_secret=os.environ['READ_WRITE_API_CONSUMER_SECRET']
+woo_api_read_write_user = APIUser(
+    customer_key=os.environ['WOO_API_READ_WRITE_CONSUMER_KEY'],
+    customer_secret=os.environ['WOO_API_READ_WRITE_CONSUMER_SECRET']
+)
+
+wp_api_read_write_user = APIUser(
+    customer_key=os.environ['WP_API_CONSUMER_KEY'],
+    customer_secret=os.environ['WP_API_CONSUMER_SECRET'],
+    token=os.environ['WP_API_TOKEN'],
+    token_secret=os.environ['WP_API_TOKEN_SECRET']
 )
 
 db_user = BasicAuthUser(

@@ -1,26 +1,25 @@
 import requests
+
 from json import dumps
 from requests_oauthlib import OAuth1
-from typing import Dict
 from urllib.parse import urljoin
 
 from framework.utilities.credentials_helper import APIUser
-from framework.utilities.env_config import api_host_config
 
 
-DEFAULT_API_URL = api_host_config['URL']
-
-
-def get_user_auth(user: APIUser) -> OAuth1:
+def get_user_auth(user: APIUser, **kwargs) -> OAuth1:
     """Returns authentication entity for a given User object"""
     return OAuth1(
         user.customer_key,
-        user.customer_secret
+        user.customer_secret,
+        user.token,
+        user.token_secret,
+        **kwargs
     )
 
 
 class APICaller:
-    def __init__(self, url=DEFAULT_API_URL, user: APIUser = None, auth: OAuth1 = None):
+    def __init__(self, url, user: APIUser = None, auth: OAuth1 = None):
         """Wrapper for API calls
 
         Args:
@@ -40,12 +39,14 @@ class APICaller:
         url = urljoin(self._url, extension)
         return requests.get(url, params=params, auth=self._auth, **kwargs)
 
-    def post(self, extension: str, payload: dict, headers: dict = None, **kwargs):
+    def post(self, extension: str, data=None, headers: dict = None, **kwargs):
         """HTTP POST request"""
         if not headers:
             headers = {'Content-Type': 'application/json'}
         url = urljoin(self._url, extension)
-        return requests.post(url, dumps(payload), headers=headers, auth=self._auth, **kwargs)
+        if type(data) is dict:
+            data = dumps(data)
+        return requests.post(url, data, headers=headers, auth=self._auth, **kwargs)
 
     def put(self, extension: str, payload: dict, headers: dict = None, **kwargs):
         """HTTP PUT request"""
