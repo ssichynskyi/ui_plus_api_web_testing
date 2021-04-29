@@ -6,7 +6,9 @@ API_HOSTS:
     ip: '192.168.192.168'
     socket:
     port:
-    hierarchy: '/aut_site/wp-json/wc/v3/'
+    hierarchy:
+      woo: '/aut_site/wp-json/wc/v3/'
+      wp: '/aut_site/wp-json/wp/v2/'
 
 DB_HOSTS:
   local:

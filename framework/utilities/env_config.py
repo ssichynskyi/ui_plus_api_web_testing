@@ -43,10 +43,6 @@ def _ensure_ip_consistency(url: str, ip: str):
 __hosts_config = ConfigParser(Path(os.environ['PROJECT_PATH']).joinpath(CONFIG_PATH, 'hosts.yaml'))
 __hosts_local_config = ConfigParser(Path(os.environ['PROJECT_PATH']).joinpath(CONFIG_PATH, 'hosts_local.yaml'))
 __hosts_config = merge_dicts(__hosts_config, __hosts_local_config)
-__url = __hosts_config['API_HOSTS'][os.environ['ENV']]['url']
-__port = __hosts_config['API_HOSTS'][os.environ['ENV']]['port']
-__hierarchy = __hosts_config['API_HOSTS'][os.environ['ENV']]['hierarchy']
-__hosts_config['API_HOSTS'][os.environ['ENV']]['URL'] = f'{__url}:{__port}{__hierarchy}'
 
 _ensure_ip_consistency(
     __hosts_config['API_HOSTS'][os.environ['ENV']]['url'],
