@@ -1,4 +1,4 @@
-# Hey, look-at-me project :-)
+# "Hey, look-at-me" project :-)
 This project demonstrates some of my skills in automated Web testing.
 
 ## AUT
@@ -42,3 +42,6 @@ pytest ...
 4. ToDo:
 - add smoke test -> host availability
 - add commandline arguments for pytest
+- add data abstraction layer from DB
+- add file upload tests (add sample files in test_api/data)
+- https://pypi.org/project/pytest-testconfig/  ?? (if it makes sense to use it)

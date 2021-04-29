@@ -1,3 +1,3 @@
 #!/bin/bash
 ARGUMENTS=( "$@" )
-pytest --maxfail=0 --verbose -m "minor and slow" "${ARGUMENTS[*]}"
+pytest --verbose -m "minor and slow" "${ARGUMENTS[*]}"
