@@ -4,7 +4,6 @@ from faker import Faker
 from data_collection.api.data_models.woo_commerce.v3 import CustomerResponse, ErrorResponse
 from framework.utilities.dao.customer_dao import BasicCustomerDAO, TooFewDatabaseEntries
 from framework.utilities.fake_data import generate_fake_user
-from framework.verificators.asserts import assert_raises
 from tests.conftest import unauthorized_api_client, readonly_api_client, read_write_api_client
 
 
@@ -13,6 +12,7 @@ def customer():
     return generate_fake_user()
 
 
+@pytest.mark.major
 def test_create_user_impossible_with_unauthorized(
         unauthorized_api_client,
         customer
@@ -20,13 +20,11 @@ def test_create_user_impossible_with_unauthorized(
     resp = unauthorized_api_client.post('customers', customer)
     assert resp.status_code == 401
     ErrorResponse(**resp.json())
-    assert_raises(
-        TooFewDatabaseEntries,
-        BasicCustomerDAO,
-        username=customer['username']
-    )
+    with pytest.raises(TooFewDatabaseEntries):
+        BasicCustomerDAO(username=customer['username'])
 
 
+@pytest.mark.major
 def test_create_user_impossible_with_readonly_access(
         readonly_api_client,
         customer
@@ -34,13 +32,12 @@ def test_create_user_impossible_with_readonly_access(
     resp = readonly_api_client.post('customers', customer)
     assert resp.status_code == 401
     ErrorResponse(**resp.json())
-    assert_raises(
-        TooFewDatabaseEntries,
-        BasicCustomerDAO,
-        username=customer['username']
-    )
+    with pytest.raises(TooFewDatabaseEntries):
+        BasicCustomerDAO(username=customer['username'])
 
 
+@pytest.mark.critical
+@pytest.mark.slow
 def test_create_get_and_delete_user(
         read_write_api_client,
         readonly_api_client,
@@ -70,8 +67,5 @@ def test_create_get_and_delete_user(
     resp = read_write_api_client.delete(f'customers/{user_id}', params={'force': 'true'})
     assert resp.status_code == 200
     CustomerResponse(**resp.json())
-    assert_raises(
-        TooFewDatabaseEntries,
-        BasicCustomerDAO,
-        username=customer['username']
-    )
+    with pytest.raises(TooFewDatabaseEntries):
+        BasicCustomerDAO(username=customer['username'])
