@@ -1,36 +1,11 @@
 from typing import Optional
-from framework.utilities.db_connector import db
+from framework.utilities.dao.base_dao import BaseDAO
 
 
-class TooManyDatabaseEntries(Exception):
-    pass
-
-
-class TooFewDatabaseEntries(Exception):
-    pass
-
-
-class BasicCustomerDAO:
-
-    basic_query = f"SELECT * FROM wp_users WHERE %c;"
-
-    @staticmethod
-    def _get(query):
-        results = db.execute_sql(query)
-        if len(results) > 1:
-            msg = f'Too many results. Found {len(results)} entries, 1 expected. SQL: {query}'
-            raise TooManyDatabaseEntries(msg)
-        elif len(results) == 0:
-            msg = f'No entries found, 1 expected. SQL: {query}'
-            raise TooFewDatabaseEntries(msg)
-        else:
-            return results[0]
+class BasicCustomerDAO(BaseDAO):
 
     def __new__(cls, *args, **kwargs):
-        if not (args or kwargs):
-            return None
-        else:
-            return super().__new__(cls)
+        return super().__new__(cls, *args, **kwargs)
 
     def __init__(
             self,
@@ -39,6 +14,15 @@ class BasicCustomerDAO:
             email: Optional[str] = None,
             **kwargs
     ):
+        """DAO for the user/customer
+
+        Args:
+            user_id: ID of the user
+            username: user login
+            email: user email
+            **kwargs: optional search kwargs follow after WHERE in SQL
+
+        """
         kwa = dict()
         if user_id:
             kwa['id'] = user_id
@@ -47,10 +31,7 @@ class BasicCustomerDAO:
         if email:
             kwa['user_email'] = email
         kwargs.update(kwa)
-        params = [f'{k}=\'{str(v)}\'' for k, v in kwargs.items()]
-        where_params = ' and '.join(params)
-        self.query = self.basic_query.replace('%c', where_params)
-        self._dict = self._get(self.query)
+        super().__init__('wp_users', **kwargs)
 
     @property
     def username(self):
@@ -65,9 +46,5 @@ class BasicCustomerDAO:
         return self._dict['user_email']
 
     @property
-    def username(self):
-        return self._dict['user_login']
-
-    @property
-    def registered(self):
+    def registration_date(self):
         return self._dict['user_registered']
