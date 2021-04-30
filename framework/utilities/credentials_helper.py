@@ -21,8 +21,8 @@ normal_ui_user = BasicAuthUser(
 )
 
 woo_api_readonly_user = APIUser(
-    customer_key=os.environ['READONLY_API_CONSUMER_KEY'],
-    customer_secret=os.environ['READONLY_API_CONSUMER_SECRET']
+    customer_key=os.environ['WOO_API_READONLY_CONSUMER_KEY'],
+    customer_secret=os.environ['WOO_API_READONLY_CONSUMER_SECRET']
 )
 
 woo_api_read_write_user = APIUser(
