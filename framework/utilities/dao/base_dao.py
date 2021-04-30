@@ -1,3 +1,4 @@
+from framework.base import LoggingObject
 from framework.utilities.db_connector import db
 from framework.utilities.dao.exceptions import (
     TooManyDatabaseEntries,
@@ -6,7 +7,7 @@ from framework.utilities.dao.exceptions import (
 )
 
 
-class BaseDAO:
+class BaseDAO(LoggingObject):
 
     basic_query = f"SELECT * FROM %t WHERE %c;"
 
@@ -34,6 +35,7 @@ class BaseDAO:
         Args:
             **kwargs: optional keyword arguments
         """
+        super().__init__(__name__)
         if not isinstance(table, str) or not str:
             msg = f'type: {type(table)}, value: {table}'
             msg = f'Table name must be a meaningful string, given: {msg}'

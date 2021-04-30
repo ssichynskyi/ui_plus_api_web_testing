@@ -1,3 +1,4 @@
+import logging
 import pytest
 from urllib.parse import urljoin
 
@@ -38,3 +39,8 @@ def unauthorized_wp_api_client() -> APICaller:
 @pytest.fixture(scope='package')
 def read_write_wp_api_client() -> APICaller:
     return APICaller(WORDPRESS_API_URL, user=wp_api_read_write_user)
+
+
+@pytest.fixture(scope="package", autouse=True)
+def logger():
+    return logging.getLogger(__name__)

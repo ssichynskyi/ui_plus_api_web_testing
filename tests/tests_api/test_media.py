@@ -9,7 +9,7 @@ from data_collection.api.data_models.woo_commerce.v3 import ErrorResponse
 from framework.utilities.dao.posts_media_dao import BasicPostDAO
 from framework.utilities.dao.exceptions import TooFewDatabaseEntries
 from framework.utilities.fake_data import generate_filename
-from tests.conftest import wp_api_read_write_user, unauthorized_wp_api_client
+from tests.conftest import wp_api_read_write_user, unauthorized_wp_api_client, logger
 
 
 PATH_TO_TEST_DATA = Path(__file__).parent.joinpath('data')

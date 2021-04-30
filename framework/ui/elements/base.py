@@ -16,8 +16,10 @@ from abc import abstractmethod
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
+from framework.base import LoggingObject
 
-class Item:
+
+class Item(LoggingObject):
     def __init__(self, infra):
         """Base class for all UI elements.
 
@@ -30,6 +32,7 @@ class Item:
             infra: infrastructure described in BaseCase class
 
         """
+        super().__init__(__name__)
         self._do = infra
 
     @property

@@ -1,10 +1,11 @@
 import pymysql
 from typing import Union, Dict, List, Tuple
+from framework.base import LoggingObject
 from framework.utilities.credentials_helper import BasicAuthUser, db_user
 from framework.utilities.env_config import db_host_config
 
 
-class DB:
+class DB(LoggingObject):
     def __init__(self, user: BasicAuthUser):
         """Database helper
 
@@ -14,6 +15,7 @@ class DB:
             user: user object
 
         """
+        super().__init__(__name__)
         self._connection_params = {
             'user': user.login,
             'password': user.password,
@@ -40,6 +42,7 @@ class DB:
         connection = pymysql.connect(**self._connection_params)
         with connection:
             with connection.cursor() as cursor:
+                self.logger.info(f'Sending SQL query: {sql}')
                 cursor.execute(sql, args)
                 res = cursor.fetchall()
         return res
