@@ -1,9 +1,10 @@
 import requests
 
-from json import dumps
+from json import dumps, loads
 from requests_oauthlib import OAuth1
 from urllib.parse import urljoin
 
+from framework.base import LoggingObject
 from framework.utilities.credentials_helper import APIUser
 
 
@@ -18,7 +19,10 @@ def get_user_auth(user: APIUser, **kwargs) -> OAuth1:
     )
 
 
-class APICaller:
+class APICaller(LoggingObject):
+
+    DEFAULT_HEADER = {'Content-Type': 'application/json'}
+
     def __init__(self, url, user: APIUser = None, auth: OAuth1 = None):
         """Wrapper for API calls
 
@@ -29,45 +33,56 @@ class APICaller:
             auth: authentication object. Shall not be provided in case user is defined
 
         """
+        super().__init__(__name__)
         self._url = url
         if user:
             auth = get_user_auth(user)
         self._auth = auth
 
+    def _send_request(self, extension, func, *args, **kwargs):
+        url = urljoin(self._url, extension)
+        resp = func(url, *args, **kwargs)
+        resp_dict = loads(resp.text)
+        status_code = resp_dict['data']['status']
+        code = resp_dict['code']
+        message = resp_dict['message']
+        msg = f'Status code: {status_code}. Message: "{code}...{message}"'
+        self.logger.warning(f'HTTP response details: {msg}')
+        return resp
+
     def get(self, extension, params: dict = None, **kwargs):
         """HTTP GET request"""
-        url = urljoin(self._url, extension)
-        return requests.get(url, params=params, auth=self._auth, **kwargs)
+        return self._send_request(extension, requests.get, params=params,
+                                  auth=self._auth, **kwargs)
 
     def post(self, extension: str, data=None, headers: dict = None, **kwargs):
         """HTTP POST request"""
         if not headers:
-            headers = {'Content-Type': 'application/json'}
-        url = urljoin(self._url, extension)
+            headers = self.DEFAULT_HEADER
         if type(data) is dict:
             data = dumps(data)
-        return requests.post(url, data, headers=headers, auth=self._auth, **kwargs)
+        return self._send_request(extension, requests.post, data, headers=headers,
+                                  auth=self._auth, **kwargs)
 
     def put(self, extension: str, data: dict, headers: dict = None, **kwargs):
         """HTTP PUT request"""
         if not headers:
-            headers = {'Content-Type': 'application/json'}
-        url = urljoin(self._url, extension)
-        return requests.put(url, dumps(data), headers=headers, auth=self._auth, **kwargs)
+            headers = self.DEFAULT_HEADER
+        return self._send_request(extension, requests.put, dumps(data),
+                                  headers=headers, auth=self._auth, **kwargs)
 
     def patch(self, extension: str, data: dict, headers: dict = None, **kwargs):
         """HTTP PATCH request"""
         if not headers:
-            headers = {'Content-Type': 'application/json'}
-        url = urljoin(self._url, extension)
-        return requests.patch(url, dumps(data), headers=headers, auth=self._auth, **kwargs)
+            headers = self.DEFAULT_HEADER
+        return self._send_request(extension, requests.patch, dumps(data),
+                                  headers=headers, auth=self._auth, **kwargs)
 
     def delete(self, extension: str, params: dict = None, **kwargs):
         """HTTP DELETE request"""
-        url = urljoin(self._url, extension)
-        return requests.delete(url, auth=self._auth, params=params, **kwargs)
+        return self._send_request(extension, requests.delete, auth=self._auth,
+                                  params=params, **kwargs)
 
     def options(self, extension: str, **kwargs):
         """HTTP OPTIONS request"""
-        url = urljoin(self._url, extension)
-        return requests.options(url, auth=self._auth, **kwargs)
+        return self._send_request(extension, requests.options, auth=self._auth, **kwargs)
