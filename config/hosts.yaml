@@ -17,6 +17,16 @@ API_HOSTS:
       woo: '/aut_site/wp-json/wc/v3/'
       wp: '/aut_site/wp-json/wp/v2/'
 
+UI_HOSTS:
+  stage:
+    url: 'http://192.168.178.49:8888'
+    hierarchy:
+      main: '/aut_site/'
+  prod:
+    url: 'http://192.168.178.49:8888'
+    hierarchy:
+      main: '/aut_site/'
+
 DB_HOSTS:
   stage:
     url: 'localhost'

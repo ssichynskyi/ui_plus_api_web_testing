@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-selenium-base = "*"
 pymysql = "*"
 pyyaml = "*"
 requests = "*"
@@ -12,6 +11,7 @@ requests-oauthlib = "*"
 pytest = "*"
 faker = "*"
 pydantic = "*"
+seleniumbase = "*"
 
 [dev-packages]
 

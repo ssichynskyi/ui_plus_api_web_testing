@@ -56,3 +56,4 @@ _ensure_ip_consistency(
 
 api_host_config = __hosts_config['API_HOSTS'][os.environ['ENV']]
 db_host_config = __hosts_config['DB_HOSTS'][os.environ['ENV']]
+ui_host_config = __hosts_config['UI_HOSTS'][os.environ['ENV']]
