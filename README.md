@@ -16,9 +16,12 @@ in order to have a more general implementation.
 ## Content
 - UI tests
 - API tests
-- Page Objects and helpers
+- Page Objects / DAO / Data Models / helpers
+- Test Cases
+
 By any means the available test coverage cannot pretend to be complete or even sufficient.
-It's just an example of what could be done
+It's just an example of what could be done.
+The focus was on the framework and the eco-system rather than on a test coverage.
 
 ## Prerequisites
 - python 3.9+ is installed
@@ -40,8 +43,5 @@ pipenv install
 pytest ...
 ```
 4. ToDo:
-- add smoke test -> host availability
-- add commandline arguments for pytest
-- add data abstraction layer from DB
-- add file upload tests (add sample files in test_api/data)
-- https://pypi.org/project/pytest-testconfig/  ?? (if it makes sense to use it)
+- add byte check for uploaded PDF (stream comparison?)
+- add environment selection as a commandline arguments for pytest (?)
