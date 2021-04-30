@@ -132,6 +132,5 @@ dmypy.json
 .idea/
 
 # Special cases for this project
-tests/examples/
 config/seleniumbase_config.py
 config/hosts_local.yaml
