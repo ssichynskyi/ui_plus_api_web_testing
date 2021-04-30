@@ -46,6 +46,5 @@ pipenv install
 pytest ...
 ```
 4. ToDo:
-- add byte check for uploaded PDF (stream comparison?)
 - add environment selection as a commandline arguments for pytest (?)
 - ADD UI TESTS

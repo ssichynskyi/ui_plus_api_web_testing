@@ -43,9 +43,13 @@ class APICaller(LoggingObject):
         url = urljoin(self._url, extension)
         resp = func(url, *args, **kwargs)
         resp_dict = loads(resp.text)
-        status_code = resp_dict['data']['status']
-        code = resp_dict['code']
-        message = resp_dict['message']
+        try:
+            status_code = resp_dict['data']['status']
+            code = resp_dict['code']
+            message = resp_dict['message']
+        except KeyError:
+            self.logger.error(f'HTTP response failed: {resp}')
+            return resp
         msg = f'Status code: {status_code}. Message: "{code}...{message}"'
         self.logger.warning(f'HTTP response details: {msg}')
         return resp
