@@ -12,12 +12,14 @@ in order to have a more general implementation.
 - Seleniumbase (UI test framework)
 - pytest
 - PyMySQL
+- requests
+- PyYaml
+- etc
 
 ## Content
-- UI tests
+- UI tests (coming soon)
 - API tests
-- Page Objects / DAO / Data Models / helpers
-- Test Cases
+- Page Objects (coming soon) / DAO / Data Models / helpers
 
 By any means the available test coverage cannot pretend to be complete or even sufficient.
 It's just an example of what could be done.
@@ -26,19 +28,20 @@ The focus was on the framework and the eco-system rather than on a test coverage
 ## Prerequisites
 - python 3.9+ is installed
 - pipenv is installed
-- Website is up and running
-- test user is available in DB and in .env file
-- .env file is configured
+- Website with DB is up and running
+- test user creds are available in DB and in .env file
+- .env file is configured based on .env.example
 - config/hosts.yaml is configured
+- config/hosts_local.yaml is configured from hosts_local.yaml.example
 
 ## Usage:
 1. Open project folder
-2. Run env command
+2. Run pipenv commands
 ```console
 pipenv shell
 pipenv install
 ```
-3. Run tests (pytest is recommended)
+3. Run tests with pytest
 ```console
 pytest ...
 ```
