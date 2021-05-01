@@ -10,7 +10,9 @@ Foreword:
 General rules:
     - when creating a new web element (the entity which can have a meaningful locator),
     use UIElement and necessary number of mixins.
-    - when dealing with more abstract entities like lists of similar items, i
+    - when dealing with more abstract entities like lists of similar items, use Item
+    - for lists made up from <select> and <option> lists use SelectMenu
+    - for <ul> and <li> use class derived from Item and put elements as it's properties
 """
 from abc import abstractmethod
 from selenium.webdriver.common.by import By
@@ -42,7 +44,14 @@ class Item(LoggingObject):
 
 class UIElement(Item):
 
-    def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+    def __init__(self, infra, locator: str, by=By.CSS_SELECTOR):
+        """Base class for all identifiable elements
+
+        Args:
+            infra: SeleniumBase BaseCase object
+            locator: locator as string
+            by: Selenium By object
+        """
         super().__init__(infra)
         self.locator = locator
         self.by = by
@@ -155,6 +164,13 @@ class TextLabel(UIElement, TextualMixin):
         super().__init__(infra, locator, by)
 
 
+class HyperLink(TextLabel, ClickableMixin):
+    """Hyperlink / clickable url"""
+
+    def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        super().__init__(infra, locator, by)
+
+
 class SelectMenu(UIElement, SelectableMixin):
     """Menu made from <select> / <option> tags"""
 
@@ -162,7 +178,7 @@ class SelectMenu(UIElement, SelectableMixin):
         super().__init__(infra, locator, by)
 
 
-class BaseListElement(Item):
+class DynamicListElement(Item):
     def __init__(self, infra):
         """Base class for the element in the list of identical items
 
@@ -201,14 +217,17 @@ class BaseListElement(Item):
             self.__setattr__(member, f'{prefix} > {self.__getattribute__(member)}')
 
 
-class BaseListOfElements(Item):
+class ListOfDynamicElements(Item):
 
     def __init__(self, infra, element_type: type):
         """List of elements of the same class
 
+        Usage:
+            use it only for lists of elements with dynamic locators
+
         Args:
             infra: Seleniumbase BaseCase object
-            element_type: class of the element. Expected subclass of BaseListElement
+            element_type: class of the element. Expected subclass of DynamicListElement
 
         """
         super().__init__(infra)
@@ -234,7 +253,7 @@ class BaseListOfElements(Item):
 
         Returns:
             List Element as indicated by element_type parameter.
-            It shall be a subclass of BaseListElement
+            It shall be a subclass of DynamicListElement
         """
         for item in self._items:
             prop = item
