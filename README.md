@@ -1,5 +1,5 @@
 # "Hey, look-at-me" project :-)
-This project demonstrates some of my skills in automated Web testing.
+For long time I've developed only proprietary SW with no opportunity to share it. So, this project demonstrates some of my skills in automated Web testing.
 
 ## AUT
 Testing is done vs locally installed WordPress website with WooCommerce plugin on it.
