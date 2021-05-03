@@ -40,7 +40,9 @@ class BasePage(Item):
     def open(self):
         """Opens page by it's URL"""
         self.do.open(self.URL)
+        self.logger.info(f'Opened url: {self.URL}')
 
     def refresh(self):
         """Refreshes this page"""
         self.do.refresh()
+        self.logger.info(f'Refreshed the page: {self.URL}')
