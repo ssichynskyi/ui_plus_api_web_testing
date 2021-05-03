@@ -119,6 +119,6 @@ def test_upload_file_possible_with_read_write(
     assert files_identical(verification_file, PATH_TO_TEST_FILE) is True
     # DELETE MEDIA
     resp = read_write_wp_api_client.delete(f'media/{media.id}', params={'force': 'true'})
-    assert resp.status_code == 200
+    assert resp.status_code == 200, read_write_wp_api_client.get_http_error_message(resp)
     with pytest.raises(TooFewDatabaseEntries):
         BasicPostDAO(post_title=file_name)

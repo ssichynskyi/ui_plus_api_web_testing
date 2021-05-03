@@ -23,5 +23,5 @@ def assert_connection(ip_address: str, port: int, timeout: int = 2) -> None:
         try:
             test_socket.connect((ip_address, port))
         except BaseException as e:
-            msg = f'Not possible to connect to host {ip_address}:{port}'
-            raise ConnectionError(msg) from e
+            msg = f'Connection to host {ip_address}:{port} is not established!'
+            raise AssertionError(msg) from e
