@@ -8,6 +8,10 @@ from framework.base import LoggingObject
 from framework.utilities.credentials_helper import APIUser
 
 
+class HttpErrorResponseStructureCorrupted(BaseException):
+    pass
+
+
 def get_user_auth(user: APIUser, **kwargs) -> OAuth1:
     """Returns authentication entity for a given User object"""
     return OAuth1(
@@ -43,16 +47,35 @@ class APICaller(LoggingObject):
         url = urljoin(self._url, extension)
         resp = func(url, *args, **kwargs)
         try:
+            status = resp.status_code
+        except AttributeError:
+            raise ConnectionError(f'HTTP response failed: {resp}')
+        if 300 <= status < 200:
+            msg = self.get_http_error_message(resp)
+            self.logger.warning(f'HTTP response details: {msg}')
+        return resp
+
+    @staticmethod
+    def get_http_error_message(resp: requests.Response) -> str:
+        """Parses http error response for error reason
+
+        Args:
+            resp: http response as provided by requests lib
+
+        Returns:
+            Message containing status code and the reason
+
+        Raises:
+            HttpErrorResponseStructureCorrupted
+        """
+        try:
             resp_dict = loads(resp.text)
             status_code = resp_dict['data']['status']
             code = resp_dict['code']
             message = resp_dict['message']
-        except (KeyError, AttributeError):
-            self.logger.error(f'HTTP response failed: {resp}')
-            return resp
-        msg = f'Status code: {status_code}. Message: "{code}...{message}"'
-        self.logger.warning(f'HTTP response details: {msg}')
-        return resp
+        except KeyError:
+            raise HttpErrorResponseStructureCorrupted(f'Response: {resp}')
+        return f'Status code: {status_code}. Message: "{code}...{message}"'
 
     def get(self, extension, params: dict = None, **kwargs):
         """HTTP GET request"""
