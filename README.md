@@ -24,6 +24,8 @@ in order to have a more general implementation.
 By any means the available test coverage cannot pretend to be complete or even sufficient.
 It's just an example of what could be done.
 The focus was on the framework and the eco-system rather than on a test coverage.
+Also, the decision to use feature-rich Seleniumbase framework brought up some
+inevitable (although not critical) tradeoffs in the quality and readability of code.
 
 ## Prerequisites
 - python 3.9+ is installed
