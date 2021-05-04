@@ -196,7 +196,7 @@ class DynamicListElement(Item):
     @property
     @abstractmethod
     def member_locators(self) -> list:
-        """Contains locators for all inner elements"""
+        """Specify names of locators for all inner elements as strings"""
 
     def update_locators(self, prefix) -> None:
         """Adds prefix for all member locators

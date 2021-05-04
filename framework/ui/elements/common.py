@@ -1,6 +1,13 @@
-from framework.ui.elements.base import Item, UIElement, HyperLink, TextLabel, EditableTextField
-from selenium.webdriver.common.keys import Keys
-import selenium.webdriver.common.actions.key_actions as key_actions
+from framework.ui.elements.base import (
+    Item,
+    UIElement,
+    HyperLink,
+    TextLabel,
+    EditableTextField,
+    ListOfDynamicElements,
+    ButtonWithText,
+    DynamicListElement
+)
 
 
 class SiteHeader(Item):
@@ -63,4 +70,108 @@ class SearchField(EditableTextField):
         super().__init__(infra, self.LOCATOR)
 
     def submit(self):
-        self.do.submit(self.LOCATOR)
+        """Simulates pressing of the ENTER key"""
+        self.do.submit(self.locator)
+
+
+class ProductImage(UIElement):
+    LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > img'
+
+    def __init__(self, infra, locator: str):
+        super().__init__(infra, locator)
+
+
+class ProductTitle(HyperLink):
+    LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > h2.woocommerce-loop-product__title'
+
+    def __init__(self, infra, locator: str):
+        super().__init__(infra, locator)
+
+
+class CurrencySymbol(HyperLink):
+    LOCATOR = 'span.woocommerce-Price-currencySymbol'
+
+    def __init__(self, infra, external_locator: str):
+        super().__init__(infra, ' > '.join((external_locator, self.LOCATOR)))
+
+
+class Price(HyperLink):
+    LOCATOR = 'span > bdi'
+
+    def __init__(self, infra, external_locator: str):
+        super().__init__(infra, ' > '.join((external_locator, self.LOCATOR)))
+
+    @property
+    def currency(self):
+        return CurrencySymbol(self.do, self.locator)
+
+
+class PriceLine(HyperLink):
+    LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > span.price'
+
+    def __init__(self, infra, locator: str):
+        super().__init__(infra, locator)
+
+    @property
+    def former(self):
+        """Entry with the previous / strikethrough price of the item"""
+        LOCATOR_EXT = 'del'
+        return Price(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
+
+    @property
+    def actual(self):
+        """Entry with the actual price of the item"""
+        LOCATOR_EXT = 'ins'
+        return Price(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
+
+
+class AddToCartButton(ButtonWithText):
+    LOCATOR = 'a.button.product_type_simple.add_to_cart_button.ajax_add_to_cart'
+
+    def __init__(self, infra, locator: str):
+        super().__init__(infra, locator)
+
+
+class ProductListElement(DynamicListElement):
+    LOCATOR = '#main > ul > li'
+
+    def __init__(self, infra):
+        super().__init__(infra)
+        self.image_locator = ProductImage.LOCATOR
+        self.title_locator = ProductTitle.LOCATOR
+        self.price_locator = PriceLine.LOCATOR
+        self.add_to_cart_button_locator = AddToCartButton.LOCATOR
+
+    @property
+    def member_locators(self) -> list:
+        return [
+            'image_locator',
+            'add_to_cart_button_locator',
+            'title_locator',
+            'price_locator'
+        ]
+
+    @property
+    def image(self):
+        return ProductImage(self.do, self.image_locator)
+
+    @property
+    def title(self):
+        return ProductTitle(self.do, self.title_locator)
+
+    @property
+    def price(self):
+        return PriceLine(self.do, self.price_locator)
+
+    @property
+    def add_to_cart_button(self):
+        return AddToCartButton(self.do, self.add_to_cart_button_locator)
+
+
+class ProductList(ListOfDynamicElements):
+
+    def __init__(self, infra):
+        super().__init__(infra, ProductListElement)
+
+    def get_by_title(self, value):
+        return self.get_by_property_value('title.text', value)
