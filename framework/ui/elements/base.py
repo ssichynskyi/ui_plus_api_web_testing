@@ -56,9 +56,11 @@ class UIElement(Item):
         self.locator = locator
         self.by = by
 
+    @property
     def visible(self):
         return self.do.is_element_visible(self.locator, self.by)
 
+    @property
     def enabled(self):
         return self.do.is_element_enabled(self.locator, self.by)
 
@@ -217,7 +219,7 @@ class DynamicListElement(Item):
             self.__setattr__(member, f'{prefix} > {self.__getattribute__(member)}')
 
 
-class ListOfDynamicElements(Item):
+class DynamicList(Item):
 
     def __init__(self, infra, element_type: type):
         """List of elements of the same class

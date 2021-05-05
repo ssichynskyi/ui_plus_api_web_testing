@@ -4,7 +4,7 @@ from framework.ui.elements.base import (
     HyperLink,
     TextLabel,
     EditableTextField,
-    ListOfDynamicElements,
+    DynamicList,
     ButtonWithText,
     DynamicListElement
 )
@@ -64,28 +64,43 @@ class NavigationMenu(Item):
 
 
 class SearchField(EditableTextField):
-    LOCATOR = '#woocommerce-product-search-field-0'
 
-    def __init__(self, infra):
-        super().__init__(infra, self.LOCATOR)
+    def __init__(self, infra, locator):
+        super().__init__(infra, locator)
 
     def submit(self):
         """Simulates pressing of the ENTER key"""
         self.do.submit(self.locator)
 
 
-class ProductImage(UIElement):
-    LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > img'
+class SearchProductField(SearchField):
+    LOCATOR = '#woocommerce-product-search-field-0'
 
-    def __init__(self, infra, locator: str):
-        super().__init__(infra, locator)
+    def __init__(self, infra):
+        super().__init__(infra, self.LOCATOR)
 
 
-class ProductTitle(HyperLink):
-    LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > h2.woocommerce-loop-product__title'
+class SearchWidget(UIElement):
+    LOCATOR = '#search-2 > form.search-form'
 
-    def __init__(self, infra, locator: str):
-        super().__init__(infra, locator)
+    def __init__(self, infra):
+        super().__init__(infra, self.LOCATOR)
+
+    # @property
+    # def default_entry(self):
+    #     LOCATOR_EXT = 'label > input.search-field'
+    #     return TextLabel(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
+
+    @property
+    def user_hint(self):
+        """Spans when mouse over"""
+        LOCATOR_EXT = 'label > span.screen-reader-text'
+        return TextLabel(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
+
+    @property
+    def search_field(self):
+        LOCATOR_EXT = 'label > input.search-field'
+        return SearchField(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
 
 class CurrencySymbol(HyperLink):
@@ -144,30 +159,20 @@ class PriceLine(HyperLink):
         return Price(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
 
-class AddToCartButton(ButtonWithText):
-    LOCATOR = 'a.button.product_type_simple.add_to_cart_button.ajax_add_to_cart'
-
-    def __init__(self, infra, locator: str):
-        super().__init__(infra, locator)
-
-
-class ViewCartButton(ButtonWithText):
-    LOCATOR = 'a.added_to_cart.wc-forward'
-
-    def __init__(self, infra, locator: str):
-        super().__init__(infra, locator)
-
-
 class ProductListElement(DynamicListElement):
     LOCATOR = '#main > ul > li'
+    IMAGE = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > img'
+    TITLE = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > h2.woocommerce-loop-product__title'
+    ADD_TO_CART = 'a.button.product_type_simple.add_to_cart_button.ajax_add_to_cart'
+    VIEW_CART = 'a.added_to_cart.wc-forward'
 
     def __init__(self, infra):
         super().__init__(infra)
-        self.image_locator = ProductImage.LOCATOR
-        self.title_locator = ProductTitle.LOCATOR
+        self.image_locator = self.IMAGE
+        self.title_locator = self.TITLE
         self.price_locator = PriceLine.LOCATOR
-        self.add_to_cart_button_locator = AddToCartButton.LOCATOR
-        self.view_cart_button_locator = ViewCartButton.LOCATOR
+        self.add_to_cart_button_locator = self.ADD_TO_CART
+        self.view_cart_button_locator = self.VIEW_CART
 
     @property
     def member_locators(self) -> list:
@@ -181,11 +186,11 @@ class ProductListElement(DynamicListElement):
 
     @property
     def image(self):
-        return ProductImage(self.do, self.image_locator)
+        return UIElement(self.do, self.image_locator)
 
     @property
     def title(self):
-        return ProductTitle(self.do, self.title_locator)
+        return HyperLink(self.do, self.title_locator)
 
     @property
     def price(self):
@@ -193,17 +198,65 @@ class ProductListElement(DynamicListElement):
 
     @property
     def add_to_cart_button(self):
-        return AddToCartButton(self.do, self.add_to_cart_button_locator)
+        return ButtonWithText(self.do, self.add_to_cart_button_locator)
 
     @property
     def view_cart_button(self):
-        return ViewCartButton(self.do, self.view_cart_button_locator)
+        return ButtonWithText(self.do, self.view_cart_button_locator)
 
 
-class ProductList(ListOfDynamicElements):
+class ProductList(DynamicList):
 
     def __init__(self, infra):
         super().__init__(infra, ProductListElement)
 
-    def get_by_title(self, value):
+    def get_by_title(self, value: str) -> ProductListElement:
+        return self.get_by_property_value('title.text', value)
+
+
+class SearchResultListElement(DynamicListElement):
+    LOCATOR = '#main > article'
+    TITLE = 'header > h2 > a'
+    IMAGE = 'div > img'
+    DESCRIPTION = 'div > p'
+
+    def __init__(self, infra):
+        super().__init__(infra)
+        self.title_locator = self.TITLE
+        self.image_locator = self.IMAGE
+        self.description_locator = self.DESCRIPTION
+
+    @property
+    def member_locators(self) -> list:
+        return [
+            'image_locator',
+            'title_locator',
+            'description_locator'
+        ]
+
+    @property
+    def image(self):
+        return UIElement(self.do, self.image_locator)
+
+    @property
+    def title(self):
+        return HyperLink(self.do, self.title_locator)
+
+    @property
+    def description(self):
+        return TextLabel(self.do, self.description_locator)
+
+
+class SearchResultList(DynamicList):
+
+    def __init__(self, infra):
+        super().__init__(infra, SearchResultListElement)
+
+    @property
+    def header(self):
+        LOCATOR = '#main > header'
+        # 'h1', 'h1 > span'
+        return TextLabel(self.do, LOCATOR)
+
+    def get_by_title(self, value: str) -> SearchResultListElement:
         return self.get_by_property_value('title.text', value)
