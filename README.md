@@ -48,6 +48,6 @@ pipenv install
 pytest ...
 ```
 4. ToDo:
-- add environment selection as a commandline arguments for pytest (?)
-- ADD UI TESTS
-- ADD docker file to execute all tests in container
+- add verification vs DB in UI test cases
+- add api-ui integration / data integrity test cases  
+- add docker file to execute all tests in container
