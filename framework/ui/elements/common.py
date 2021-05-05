@@ -98,12 +98,31 @@ class CurrencySymbol(HyperLink):
 class Price(HyperLink):
     LOCATOR = 'span > bdi'
 
-    def __init__(self, infra, external_locator: str):
-        super().__init__(infra, ' > '.join((external_locator, self.LOCATOR)))
+    def __init__(self, infra, external_locator: str, own_locator: str = None):
+        if own_locator is None:
+            own_locator = self.LOCATOR
+        super().__init__(infra, ' > '.join((external_locator, own_locator)))
 
     @property
     def currency(self):
         return CurrencySymbol(self.do, self.locator)
+
+
+class CartContents(UIElement):
+    LOCATOR = '#site-header-cart > li > a.cart-contents'
+
+    def __init__(self, infra):
+        super().__init__(infra, self.LOCATOR)
+
+    @property
+    def total_price(self):
+        LOCATOR_EXT = 'span.woocommerce-Price-amount.amount'
+        return Price(self.do, self.locator, LOCATOR_EXT)
+
+    @property
+    def number_of_items(self):
+        LOCATOR_EXT = 'span.count'
+        return HyperLink(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
 
 class PriceLine(HyperLink):
@@ -132,6 +151,13 @@ class AddToCartButton(ButtonWithText):
         super().__init__(infra, locator)
 
 
+class ViewCartButton(ButtonWithText):
+    LOCATOR = 'a.added_to_cart.wc-forward'
+
+    def __init__(self, infra, locator: str):
+        super().__init__(infra, locator)
+
+
 class ProductListElement(DynamicListElement):
     LOCATOR = '#main > ul > li'
 
@@ -141,6 +167,7 @@ class ProductListElement(DynamicListElement):
         self.title_locator = ProductTitle.LOCATOR
         self.price_locator = PriceLine.LOCATOR
         self.add_to_cart_button_locator = AddToCartButton.LOCATOR
+        self.view_cart_button_locator = ViewCartButton.LOCATOR
 
     @property
     def member_locators(self) -> list:
@@ -148,7 +175,8 @@ class ProductListElement(DynamicListElement):
             'image_locator',
             'add_to_cart_button_locator',
             'title_locator',
-            'price_locator'
+            'price_locator',
+            'view_cart_button_locator'
         ]
 
     @property
@@ -166,6 +194,10 @@ class ProductListElement(DynamicListElement):
     @property
     def add_to_cart_button(self):
         return AddToCartButton(self.do, self.add_to_cart_button_locator)
+
+    @property
+    def view_cart_button(self):
+        return ViewCartButton(self.do, self.view_cart_button_locator)
 
 
 class ProductList(ListOfDynamicElements):
