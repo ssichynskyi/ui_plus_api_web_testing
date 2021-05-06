@@ -255,7 +255,6 @@ class SearchResultList(DynamicList):
     @property
     def header(self):
         LOCATOR = '#main > header'
-        # 'h1', 'h1 > span'
         return TextLabel(self.do, LOCATOR)
 
     def get_by_title(self, value: str) -> SearchResultListElement:
