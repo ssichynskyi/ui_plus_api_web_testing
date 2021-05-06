@@ -13,6 +13,8 @@ class PostDao(BaseDAO):
     AUTHOR_ID = 'post_author'
     TYPE = 'post_type'
     FILE_TYPE = 'post_mime_type'
+    CONTENT = 'post_content'
+    COMMENT_COUNT = 'comment_count'
 
     def __init__(self, data_dict):
         """Data access object (DAO) for posts/products/pages
@@ -57,3 +59,11 @@ class PostDao(BaseDAO):
     @property
     def file_type(self) -> str:
         return self._dict[self.FILE_TYPE]
+
+    @property
+    def content(self) -> str:
+        return self._dict[self.CONTENT]
+
+    @property
+    def comment_count(self) -> int:
+        return self._dict[self.COMMENT_COUNT]
