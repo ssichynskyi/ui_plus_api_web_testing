@@ -51,3 +51,6 @@ pytest ...
 - add verification vs DB in UI test cases
 - add api-ui integration / data integrity test cases  
 - add docker file to execute all tests in container
+- reduce boilerplate code in dynamic list elements with
+automatic search of property using dir() and filtering by "_locator"
+instead of indexing them in "member_locators" ppty
