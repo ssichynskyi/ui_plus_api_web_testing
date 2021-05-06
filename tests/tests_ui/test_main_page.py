@@ -2,8 +2,10 @@ import pytest
 
 from selenium.common.exceptions import NoSuchElementException
 from seleniumbase import BaseCase
-from framework.ui.pages.common import MainPage
+from framework.ui.pages.common import HomePage
 from framework.ui.elements.common import ProductList, SearchResultList
+from framework.utilities.dao.dao_helpers import generate_dao_objects
+from framework.utilities.dao.posts_dao import PostDao
 
 
 class TestMainPage(BaseCase):
@@ -11,23 +13,29 @@ class TestMainPage(BaseCase):
 
     @pytest.mark.critical
     @pytest.mark.slow
-    def test_main_page_content(self):
+    def test_home_page_posts(self):
         # ToDo add assertions
-        page = MainPage(self)
-        page.open()
-        self.assertEqual("Super website", page.header.site_title.text)
-        self.assertEqual("Just another WordPress site", page.header.site_description.text)
-        page.header.site_title.click()
-        page.navigation_menu.shop.click()
-        page.navigation_menu.sample_page.click()
-        page.navigation_menu.cart.click()
-        page.navigation_menu.home.click()
+        home_page = HomePage(self)
+        home_page.open()
+        self.assertEqual("Super website", home_page.header.site_title.text)
+        self.assertEqual("Just another WordPress site", home_page.header.site_description.text)
+        # Get posts from DB
+        posts_in_db = generate_dao_objects(
+            PostDao, PostDao.TABLE,
+            filter_criteria={PostDao.TYPE: 'post'},
+            order_by=(PostDao.DATE_GMT, 'DESC')
+        )
+        latest_post = posts_in_db[0]
+        post_in_ui = home_page.posts[0]
+        assert post_in_ui.title.text == latest_post.title
+        assert post_in_ui.description.text in latest_post.content
+        assert post_in_ui.number_of_comments.text == f'{latest_post.comment_count} Comment'
 
     @pytest.mark.critical
     @pytest.mark.slow
     def test_product_list_and_cart(self):
         # ToDo: add similar test with random element from DB
-        page = MainPage(self)
+        page = HomePage(self)
         page.open()
         page.navigation_menu.shop.click()
         assert page.cart.total_price.text == '€0,00'
@@ -56,7 +64,7 @@ class TestMainPage(BaseCase):
     @pytest.mark.major
     @pytest.mark.slow
     def test_global_search(self):
-        page = MainPage(self)
+        page = HomePage(self)
         page.open()
         # search with only 1 result
         page.search.search_field.add_text('album')
