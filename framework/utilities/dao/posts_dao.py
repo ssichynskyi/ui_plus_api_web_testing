@@ -1,72 +1,59 @@
-from typing import Optional
+from datetime import datetime
 from framework.utilities.dao.base_dao import BaseDAO
 
 
-class BasicPostDAO(BaseDAO):
+class PostDao(BaseDAO):
+    TABLE = 'wp_posts'
+    ID = 'ID'
+    TITLE = 'post_title'
+    NAME = 'post_name'
+    GUID = 'guid'
+    DATE = 'post_date'
+    DATE_GMT = 'post_date_gmt'
+    AUTHOR_ID = 'post_author'
+    TYPE = 'post_type'
+    FILE_TYPE = 'post_mime_type'
 
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls, *args, **kwargs)
-
-    def __init__(
-            self,
-            post_title: Optional[str] = None,
-            post_name: Optional[str] = None,
-            guid: Optional[str] = None,
-            post_id: Optional[int] = None,
-            **kwargs
-    ):
-        """DAO for posts and media items
+    def __init__(self, data_dict):
+        """Data access object (DAO) for posts/products/pages
 
         Args:
-            post_title: the name of the post. For media attachment is equal to post_name
-            post_name: the name of the post. For media attachment is equal to post_title
-            guid: url to the resource
-            **kwargs: optional keyword arguments
+            data_dict: dict of elements sent by DB where keys = col, values = cells
         """
-        kwa = dict()
-        if post_title:
-            kwa['post_title'] = post_title
-        if post_name:
-            kwa['post_name'] = post_name
-        if guid:
-            kwa['guid'] = guid
-        if post_id:
-            kwa['ID'] = post_id
-        kwargs.update(kwa)
-        super().__init__('wp_posts', **kwargs)
+        super().__init__(data_dict)
 
     @property
-    def title(self):
-        return self._dict['post_title']
+    def title(self) -> str:
+        return self._dict[self.TITLE]
 
     @property
-    def id(self):
-        return self._dict['ID']
+    def id(self) -> id:
+        return self._dict[self.ID]
 
     @property
-    def name(self):
-        return self._dict['post_name']
+    def name(self) -> str:
+        return self._dict[self.NAME]
 
     @property
-    def guid(self):
-        return self._dict['guid']
+    def guid(self) -> str:
+        return self._dict[self.GUID]
 
     @property
-    def date(self):
-        return self._dict['post_date']
+    def date(self) -> datetime:
+        return self._dict[self.DATE]
 
     @property
-    def date_gmt(self):
-        return self._dict['post_date_gmt']
+    def date_gmt(self) -> datetime:
+        return self._dict[self.DATE_GMT]
 
     @property
-    def author_id(self):
-        return self._dict['author_id']
+    def author_id(self) -> int:
+        return self._dict[self.AUTHOR_ID]
 
     @property
-    def type(self):
-        return self._dict['post_type']
+    def type(self) -> str:
+        return self._dict[self.TYPE]
 
     @property
-    def file_type(self):
-        return self._dict['post_mime_type']
+    def file_type(self) -> str:
+        return self._dict[self.FILE_TYPE]

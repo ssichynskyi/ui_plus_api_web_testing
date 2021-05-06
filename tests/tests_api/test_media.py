@@ -6,8 +6,8 @@ from urllib.request import urlretrieve
 from pathlib import Path
 
 from data_collection.api.data_models.woo_commerce.v3 import ErrorResponse
-from framework.utilities.dao.posts_media_dao import BasicPostDAO
-from framework.utilities.dao.exceptions import TooFewDatabaseEntries
+from framework.utilities.dao.dao_helpers import generate_dao_objects
+from framework.utilities.dao.posts_dao import PostDao
 from framework.utilities.fake_data import generate_filename
 from tests.conftest import wp_api_read_write_user, unauthorized_wp_api_client, logger
 
@@ -87,8 +87,9 @@ def test_upload_file_impossible_with_unauthorized(
     resp = unauthorized_wp_api_client.post('media', headers=upload_header, data=file_data)
     assert resp.status_code == 401
     ErrorResponse(**resp.json())
-    with pytest.raises(TooFewDatabaseEntries):
-        BasicPostDAO(post_title=file_name)
+    media = generate_dao_objects(PostDao, PostDao.TABLE,
+                                 filter_criteria={'post_title': file_name})
+    assert len(media) == 0
 
 
 @pytest.mark.slow
@@ -110,15 +111,20 @@ def test_upload_file_possible_with_read_write(
         pass
     # Temporary not possible to make an assertion below because of no response
     # assert resp.status_code == 200
-    media = BasicPostDAO(post_title=file_name)
-    assert media.file_type == f'application/{EXT}'
-    assert media.type == 'attachment'
+    media = generate_dao_objects(
+        PostDao, PostDao.TABLE,
+        filter_criteria={'post_title': file_name}
+    )
+    assert len(media) == 1
+    assert media[0].file_type == f'application/{EXT}'
+    assert media[0].type == 'attachment'
 
     # Verify that file on the server is the same as test data file
-    verification_file, _ = download_file(media.guid)
+    verification_file, _ = download_file(media[0].guid)
     assert files_identical(verification_file, PATH_TO_TEST_FILE) is True
     # DELETE MEDIA
-    resp = read_write_wp_api_client.delete(f'media/{media.id}', params={'force': 'true'})
+    resp = read_write_wp_api_client.delete(f'media/{media[0].id}', params={'force': 'true'})
     assert resp.status_code == 200, read_write_wp_api_client.get_http_error_message(resp)
-    with pytest.raises(TooFewDatabaseEntries):
-        BasicPostDAO(post_title=file_name)
+    media = generate_dao_objects(PostDao, PostDao.TABLE,
+                                 filter_criteria={'post_title': file_name})
+    assert len(media) == 0
