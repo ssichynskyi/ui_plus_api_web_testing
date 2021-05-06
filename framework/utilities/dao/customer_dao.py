@@ -1,50 +1,34 @@
-from typing import Optional
+from datetime import datetime
 from framework.utilities.dao.base_dao import BaseDAO
 
 
-class BasicCustomerDAO(BaseDAO):
+class CustomerDAO(BaseDAO):
+    TABLE = 'wp_users'
+    ID = 'ID'
+    LOGIN = 'user_login'
+    EMAIL = 'user_email'
+    REG_DATE = 'user_registered'
 
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls, *args, **kwargs)
-
-    def __init__(
-            self,
-            user_id: Optional[int] = None,
-            username: Optional[str] = None,
-            email: Optional[str] = None,
-            **kwargs
-    ):
-        """DAO for the user/customer
+    def __init__(self, data_dict):
+        """Data access object (DAO) for posts/products/pages
 
         Args:
-            user_id: ID of the user
-            username: user login
-            email: user email
-            **kwargs: optional search kwargs follow after WHERE in SQL
-
+            data_dict: dict of elements sent by DB where keys = col, values = cells
         """
-        kwa = dict()
-        if user_id:
-            kwa['id'] = user_id
-        if username:
-            kwa['user_login'] = username
-        if email:
-            kwa['user_email'] = email
-        kwargs.update(kwa)
-        super().__init__('wp_users', **kwargs)
+        super().__init__(data_dict)
 
     @property
-    def username(self):
-        return self._dict['user_login']
+    def username(self) -> str:
+        return self._dict[self.LOGIN]
 
     @property
-    def id(self):
-        return self._dict['ID']
+    def id(self) -> int:
+        return self._dict[self.ID]
 
     @property
-    def email(self):
-        return self._dict['user_email']
+    def email(self) -> str:
+        return self._dict[self.EMAIL]
 
     @property
-    def registration_date(self):
-        return self._dict['user_registered']
+    def registration_date(self) -> datetime:
+        return self._dict[self.REG_DATE]
