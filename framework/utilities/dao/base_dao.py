@@ -1,51 +1,13 @@
 from framework.base import LoggingObject
-from framework.utilities.db_connector import db
-from framework.utilities.dao.exceptions import (
-    TooManyDatabaseEntries,
-    TooFewDatabaseEntries,
-    IncorrectSQLQuery
-)
 
 
 class BaseDAO(LoggingObject):
-
-    basic_query = f"SELECT * FROM %t WHERE %c;"
-
-    @staticmethod
-    def _get(query):
-        results = db.execute_sql(query)
-        if len(results) > 1:
-            msg = f'Too many results. Found {len(results)} entries, 1 expected. SQL: {query}'
-            raise TooManyDatabaseEntries(msg)
-        elif len(results) == 0:
-            msg = f'No entries found, 1 expected. SQL: {query}'
-            raise TooFewDatabaseEntries(msg)
-        else:
-            return results[0]
-
-    def __new__(cls, *args, **kwargs):
-        if not (args or kwargs):
-            return None
-        else:
-            return super().__new__(cls)
-
-    def __init__(self, table: str, **kwargs):
-        """Base class for all Data Access Objects (DAO)
+    def __init__(self, data_dict: dict):
+        """Base class for DAO objects
 
         Args:
-            **kwargs: optional keyword arguments
+            data_dict: dict of elements sent by DB where keys = col, values = cells
+
         """
-        super().__init__(__name__)
-        if not isinstance(table, str) or not str:
-            msg = f'type: {type(table)}, value: {table}'
-            msg = f'Table name must be a meaningful string, given: {msg}'
-            raise ValueError(msg)
-        params = [f'{k}=\'{str(v)}\'' for k, v in kwargs.items()]
-        where_params = ' and '.join(params)
-        self.query = self.basic_query.replace('%t', table).replace('%c', where_params)
-        if not kwargs:
-            msg = f'Result query: {self.query}'
-            msg = f' e.g. those given after SQL WHERE statement. {msg}'
-            msg = f'SQL query shall contain at least one search criterion {msg}'
-            raise IncorrectSQLQuery(msg)
-        self._dict = self._get(self.query)
+        super().__init__()
+        self._dict = data_dict

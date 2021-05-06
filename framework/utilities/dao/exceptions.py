@@ -1,13 +1,9 @@
 """Database data retrieval errors"""
 
 
-class TooManyDatabaseEntries(Exception):
+class SQLQueryError(Exception):
     pass
 
 
-class TooFewDatabaseEntries(Exception):
-    pass
-
-
-class IncorrectSQLQuery(Exception):
+class ObjectSerializationError(Exception):
     pass
