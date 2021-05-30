@@ -1,1 +1,1 @@
-"""Module for various utilities"""
+"""Module for various utilities and helpers."""

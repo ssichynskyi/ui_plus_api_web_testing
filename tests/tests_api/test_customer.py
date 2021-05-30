@@ -5,7 +5,6 @@ from data_collection.api.data_models.woo_commerce.v3 import CustomerResponse, Er
 from framework.utilities.dao.customer_dao import CustomerDAO
 from framework.utilities.dao.dao_helpers import generate_dao_objects
 from framework.utilities.fake_data import generate_fake_user
-from tests.conftest import unauthorized_woo_api_client, readonly_woo_api_client, read_write_woo_api_client
 
 
 @pytest.fixture(scope="module")

@@ -14,6 +14,7 @@ General rules:
     - for lists made up from <select> and <option> lists use SelectMenu
     - for <ul> and <li> use class derived from Item and put elements as it's properties
 """
+
 from abc import abstractmethod
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -45,12 +46,13 @@ class Item(LoggingObject):
 class UIElement(Item):
 
     def __init__(self, infra, locator: str, by=By.CSS_SELECTOR):
-        """Base class for all identifiable elements
+        """Base class for all identifiable elements.
 
         Args:
             infra: SeleniumBase BaseCase object
             locator: locator as string
             by: Selenium By object
+
         """
         super().__init__(infra)
         self.locator = locator
@@ -66,7 +68,7 @@ class UIElement(Item):
 
 
 class ClickableMixin:
-    """Mixin which provides clickability for child class"""
+    """Mixin which provides clickability for child class."""
 
     def click(self):
         self.do.click(self.locator, self.by)
@@ -76,39 +78,39 @@ class ClickableMixin:
 
 
 class EditableTextMixin:
-    """Mixin which provides feature of write text to child class"""
+    """Mixin which provides feature of write text to child class."""
 
     def clear(self):
-        """Clears text box field from all text"""
+        """Clears text box field from all text."""
         self.do.clear(self.locator, self.by)
 
     def add_text(self, text):
-        """Appends new text to the end of the text in text box"""
+        """Appends new text to the end of the text in text box."""
         self.do.add_text(self.locator, text, self.by)
 
     def write(self, text):
-        """Rewrites the given text in text box"""
+        """Rewrites the given text in text box."""
         self.do.write(self.locator, text, self.by)
 
 
 class CheckableMixin:
-    """Mixin which provides feature of check/uncheck for child class"""
+    """Mixin which provides feature of check/uncheck for child class."""
 
     def check(self):
-        """Checks checkbox/radio button"""
+        """Checks checkbox/radio button."""
         self.do.select_if_unselected(self.locator, self.by)
 
     def uncheck(self):
-        """Unchecks checkbox/radio button"""
+        """Unchecks checkbox/radio button."""
         self.do.unselect_if_selected(self.locator, self.by)
 
     def checked(self):
-        """Examines checkbox/radio button for status"""
+        """Examines checkbox/radio button for status."""
         self.do.is_checked(self.locator, self.by)
 
 
 class TextualMixin:
-    """Mixin which provides features of non-editable text"""
+    """Mixin which provides features of non-editable text."""
 
     @property
     def text(self):
@@ -116,7 +118,7 @@ class TextualMixin:
 
 
 class SelectableMixin:
-    """Mixin which provides navigation features in <select> / <options> menu"""
+    """Mixin which provides navigation features in <select> / <options> menu."""
 
     def _select_option_by_text(self, text):
         self.do.select_option_by_text(self.locator, text, self.by)
@@ -134,7 +136,7 @@ class SelectableMixin:
 class ButtonWithText(UIElement, ClickableMixin, TextualMixin):
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
-        """Button with text label
+        """Button with text label.
 
         Args:
             infra: Seleniumbase BaseCase object
@@ -146,35 +148,35 @@ class ButtonWithText(UIElement, ClickableMixin, TextualMixin):
 
 
 class ButtonWithIcon(UIElement, ClickableMixin):
-    """Button with only icon"""
+    """Button with only icon."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
         super().__init__(infra, locator, by)
 
 
 class EditableTextField(UIElement, ClickableMixin, EditableTextMixin):
-    """Editable text input field"""
+    """Editable text input field."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
         super().__init__(infra, locator, by)
 
 
 class TextLabel(UIElement, TextualMixin):
-    """Normal non-editable text label"""
+    """Normal non-editable text label."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
         super().__init__(infra, locator, by)
 
 
 class HyperLink(TextLabel, ClickableMixin):
-    """Hyperlink / clickable url"""
+    """Hyperlink / clickable url."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
         super().__init__(infra, locator, by)
 
 
 class SelectMenu(UIElement, SelectableMixin):
-    """Menu made from <select> / <option> tags"""
+    """Menu made from <select> / <option> tags."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
         super().__init__(infra, locator, by)
@@ -182,7 +184,7 @@ class SelectMenu(UIElement, SelectableMixin):
 
 class DynamicListElement(Item):
     def __init__(self, infra):
-        """Base class for the element in the list of identical items
+        """Base class for the element in the list of identical items.
 
         Remark:
             shall not be used for lists made of <select>/<option> tags.
@@ -198,10 +200,10 @@ class DynamicListElement(Item):
     @property
     @abstractmethod
     def member_locators(self) -> list:
-        """Specify names of locators for all inner elements as strings"""
+        """Specify names of locators for all inner elements as strings."""
 
     def update_locators(self, prefix) -> None:
-        """Adds prefix for all member locators
+        """Adds prefix for all member locators.
 
         Assumption:
             prefix is a css selector which allows to identify this
@@ -222,7 +224,7 @@ class DynamicListElement(Item):
 class DynamicList(Item):
 
     def __init__(self, infra, element_type: type):
-        """List of elements of the same class
+        """List of elements of the same class.
 
         Usage:
             use it only for lists of elements with dynamic locators
@@ -245,7 +247,7 @@ class DynamicList(Item):
         return elements
 
     def get_by_property_value(self, prop_call: str, value, full_match=True):
-        """Get the element of the list by Selenium WebElement property value
+        """Get the element of the list by Selenium WebElement property value.
 
         Args:
             prop_call: str represents the full path to a ppty of Selenium WebElement
@@ -256,6 +258,7 @@ class DynamicList(Item):
         Returns:
             List Element as indicated by element_type parameter.
             It shall be a subclass of DynamicListElement
+
         """
         for item in self._items:
             prop = item
@@ -286,7 +289,7 @@ class DynamicList(Item):
 
 
 def generate_css_selector(infra, web_element: WebElement) -> str:
-    """Generates the css selector from a given Selenium WebElement
+    """Generates the css selector from a given Selenium WebElement.
 
     Args:
         infra: Seleniumbase BaseCase object

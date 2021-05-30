@@ -13,7 +13,7 @@ class HttpErrorResponseStructureCorrupted(BaseException):
 
 
 def get_user_auth(user: APIUser, **kwargs) -> OAuth1:
-    """Returns authentication entity for a given User object"""
+    """Returns authentication entity for a given User object."""
     return OAuth1(
         user.customer_key,
         user.customer_secret,
@@ -67,6 +67,7 @@ class APICaller(LoggingObject):
 
         Raises:
             HttpErrorResponseStructureCorrupted
+
         """
         try:
             resp_dict = loads(resp.text)
@@ -78,12 +79,12 @@ class APICaller(LoggingObject):
         return f'Status code: {status_code}. Message: "{code}...{message}"'
 
     def get(self, extension, params: dict = None, **kwargs):
-        """HTTP GET request"""
+        """HTTP GET request."""
         return self._send_request(extension, requests.get, params=params,
                                   auth=self._auth, **kwargs)
 
     def post(self, extension: str, data=None, headers: dict = None, **kwargs):
-        """HTTP POST request"""
+        """HTTP POST request."""
         if not headers:
             headers = self.DEFAULT_HEADER
         if type(data) is dict:
@@ -92,24 +93,24 @@ class APICaller(LoggingObject):
                                   auth=self._auth, **kwargs)
 
     def put(self, extension: str, data: dict, headers: dict = None, **kwargs):
-        """HTTP PUT request"""
+        """HTTP PUT request."""
         if not headers:
             headers = self.DEFAULT_HEADER
         return self._send_request(extension, requests.put, dumps(data),
                                   headers=headers, auth=self._auth, **kwargs)
 
     def patch(self, extension: str, data: dict, headers: dict = None, **kwargs):
-        """HTTP PATCH request"""
+        """HTTP PATCH request."""
         if not headers:
             headers = self.DEFAULT_HEADER
         return self._send_request(extension, requests.patch, dumps(data),
                                   headers=headers, auth=self._auth, **kwargs)
 
     def delete(self, extension: str, params: dict = None, **kwargs):
-        """HTTP DELETE request"""
+        """HTTP DELETE request."""
         return self._send_request(extension, requests.delete, auth=self._auth,
                                   params=params, **kwargs)
 
     def options(self, extension: str, **kwargs):
-        """HTTP OPTIONS request"""
+        """HTTP OPTIONS request."""
         return self._send_request(extension, requests.options, auth=self._auth, **kwargs)

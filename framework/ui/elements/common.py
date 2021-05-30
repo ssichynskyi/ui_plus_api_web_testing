@@ -15,6 +15,12 @@ class SiteHeader(Item):
     SITE_DESCR = '#masthead > div.col-full > div.site-branding > p'
 
     def __init__(self, infra):
+        """Header of the website with title, description, etc.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
 
     @property
@@ -30,6 +36,12 @@ class NavigationMenu(Item):
     LOCATOR = '#site-navigation > div.menu > ul.nav-menu'
 
     def __init__(self, infra):
+        """Navigation menu. Extends Item.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
 
     @property
@@ -66,6 +78,13 @@ class NavigationMenu(Item):
 class SearchField(EditableTextField):
 
     def __init__(self, infra, locator):
+        """Search field extends Editable Text Field.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+            locator: own locator
+
+        """
         super().__init__(infra, locator)
 
     def submit(self):
@@ -77,6 +96,12 @@ class SearchProductField(SearchField):
     LOCATOR = '#woocommerce-product-search-field-0'
 
     def __init__(self, infra):
+        """Search product field - shortcut to SearchField with predefined locator.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra, self.LOCATOR)
 
 
@@ -84,11 +109,17 @@ class SearchWidget(UIElement):
     LOCATOR = '#search-2 > form.search-form'
 
     def __init__(self, infra):
+        """Widget that incorporates a search field.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra, self.LOCATOR)
 
     @property
     def user_hint(self) -> TextLabel:
-        """Spans when mouse over"""
+        """Spans when mouse over."""
         LOCATOR_EXT = 'label > span.screen-reader-text'
         return TextLabel(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
@@ -109,6 +140,13 @@ class Price(HyperLink):
     LOCATOR = 'span > bdi'
 
     def __init__(self, infra, external_locator: str, own_locator: str = None):
+        """Price UI element. Extends Hyperlink with currency field.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+            external_locator: locator for container of this widget
+            own_locator: locator of thi widget
+        """
         if own_locator is None:
             own_locator = self.LOCATOR
         super().__init__(infra, ' > '.join((external_locator, own_locator)))
@@ -122,6 +160,12 @@ class CartContents(UIElement):
     LOCATOR = '#site-header-cart > li > a.cart-contents'
 
     def __init__(self, infra):
+        """Contents of the shopping cart.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra, self.LOCATOR)
 
     @property
@@ -139,17 +183,24 @@ class PriceLine(HyperLink):
     LOCATOR = 'a.woocommerce-LoopProduct-link.woocommerce-loop-product__link > span.price'
 
     def __init__(self, infra, locator: str):
+        """Price line which incorporates former and actual price
+
+        Args:
+            infra: Seleniumbase BaseCase object
+            locator: own locator
+
+        """
         super().__init__(infra, locator)
 
     @property
     def former(self) -> Price:
-        """Entry with the previous / strikethrough price of the item"""
+        """Entry with the previous / strikethrough price of the item."""
         LOCATOR_EXT = 'del'
         return Price(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
     @property
     def actual(self) -> Price:
-        """Entry with the actual price of the item"""
+        """Entry with the actual price of the item."""
         LOCATOR_EXT = 'ins'
         return Price(self.do, ' > '.join((self.locator, LOCATOR_EXT)))
 
@@ -160,6 +211,12 @@ class BasePost(DynamicListElement):
     DESCRIPTION = 'div > p'
 
     def __init__(self, infra):
+        """Basic class for the post widget.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
         self.title_locator = self.TITLE
         self.description_locator = self.DESCRIPTION
@@ -185,6 +242,12 @@ class PostWithImage(BasePost):
     IMAGE = 'div > img'
 
     def __init__(self, infra):
+        """Variance of a post with image. Extends BasePost.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
         self.image_locator = self.IMAGE
 
@@ -207,6 +270,14 @@ class ProductListElement(PostWithImage):
     VIEW_CART = 'a.added_to_cart.wc-forward'
 
     def __init__(self, infra):
+        """Element of the list of products. Extends PostWithImage.
+
+        By its nature Woo Commerce implements products as posts.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
         self.image_locator = self.IMAGE
         self.title_locator = self.TITLE
@@ -240,9 +311,23 @@ class ProductListElement(PostWithImage):
 class ProductList(DynamicList):
 
     def __init__(self, infra):
+        """Dynamic list of products. Extends DynamicList.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra, ProductListElement)
 
     def get_by_title(self, value: str) -> ProductListElement:
+        """Gets element by its title. Shortcut for parent method.
+
+        Args:
+            value: title as a string
+
+        Returns:
+            List Element
+        """
         return self.get_by_property_value('title.text', value)
 
 
@@ -252,6 +337,12 @@ class Post(BasePost):
     COMMENTS_NUMBER = 'header > span.post-comments > a'
 
     def __init__(self, infra):
+        """Ordinary user's post. Not a product. Extends BasePost.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra)
         self.posted_on_locator = self.POSTED_ON
         self.posted_by_locator = self.POSTED_BY
@@ -283,12 +374,22 @@ class Post(BasePost):
 class PostsList(DynamicList):
 
     def __init__(self, infra):
+        """List of ordinary user posts. Not products."""
         super().__init__(infra, Post)
 
 
 class SearchResultList(DynamicList):
 
     def __init__(self, infra):
+        """List of the results obtained by search. Not product search.
+
+        These lists have differences although both can return products as
+        elements of the search result list.
+
+        Args:
+            infra: Seleniumbase BaseCase object
+
+        """
         super().__init__(infra, PostWithImage)
 
     @property
@@ -297,4 +398,13 @@ class SearchResultList(DynamicList):
         return TextLabel(self.do, LOCATOR)
 
     def get_by_title(self, value: str) -> PostWithImage:
+        """Gets element by its title. Shortcut for parent method.
+
+        Args:
+            value: title as a string
+
+        Returns:
+            Element of the list as PostWithImage class object
+
+        """
         return self.get_by_property_value('title.text', value)

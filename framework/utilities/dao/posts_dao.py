@@ -17,10 +17,11 @@ class PostDao(BaseDAO):
     COMMENT_COUNT = 'comment_count'
 
     def __init__(self, data_dict):
-        """Data access object (DAO) for posts/products/pages
+        """Data access object (DAO) for posts/products/pages.
 
         Args:
             data_dict: dict of elements sent by DB where keys = col, values = cells
+
         """
         super().__init__(data_dict)
 

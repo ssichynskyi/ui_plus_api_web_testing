@@ -10,7 +10,7 @@ from framework.utilities.dict_merger import merge_dicts
 
 
 CONFIG_PATH = 'config'
-"""path to config files folder from project root"""
+"""path to config files folder from project root."""
 
 
 class ConfigInconsistencyException(ValueError):
@@ -18,7 +18,7 @@ class ConfigInconsistencyException(ValueError):
 
 
 class ConfigParser:
-    """Extracts the data from the configuration file given"""
+    """Extracts the data from the configuration file given."""
     def __new__(cls, path):
         with open(path, 'r') as f:
             contents = f.read()
@@ -34,7 +34,7 @@ def _ensure_ip_consistency(url: str, ip: str):
         ip_from_url = ip_from_url.group()
         if ip_from_url != ip:
             msg = (
-                f'Inconsistency in configuration file! IP address in url',
+                'Inconsistency in configuration file! IP address in url',
                 f'{ip_from_url} is different from one in ip key {ip}'
             )
             raise ConfigInconsistencyException(' '.join(msg))

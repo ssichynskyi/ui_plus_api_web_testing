@@ -10,6 +10,7 @@ class MainPage(BasePage):
     URL = UI_URL
 
     def __init__(self, infra):
+        """Implements main part of main page."""
         super().__init__(infra)
 
     @property
@@ -36,8 +37,9 @@ class MainPage(BasePage):
 class HomePage(MainPage):
 
     def __init__(self, infra):
+        """Implements main part of home page."""
         super().__init__(infra)
 
     @property
-    def posts(self):
+    def posts(self) -> PostsList:
         return PostsList(self.do)

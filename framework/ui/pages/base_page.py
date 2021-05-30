@@ -5,7 +5,7 @@ class BasePage(Item):
     URL = None
 
     def __init__(self, infra):
-        """Base class for all Page Objects
+        """Base class for all Page Objects.
 
         Explanation:
             It's assumed that the main idea of Page Objects is to locate
@@ -38,11 +38,11 @@ class BasePage(Item):
         super().__init__(infra)
 
     def open(self):
-        """Opens page by it's URL"""
+        """Opens page by it's URL."""
         self.do.open(self.URL)
         self.logger.info(f'Opened url: {self.URL}')
 
     def refresh(self):
-        """Refreshes this page"""
+        """Refreshes this page."""
         self.do.refresh()
         self.logger.info(f'Refreshed the page: {self.URL}')

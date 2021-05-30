@@ -1,4 +1,4 @@
-"""Module for complex verification routines
+"""Module for complex verification routines.
 
 In order to keep tests, Page Objects, Web Elements and actions clean,
 all complex verifications shall be implemented inside this module.
