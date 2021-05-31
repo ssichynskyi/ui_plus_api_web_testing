@@ -53,9 +53,9 @@ pipenv install
 ```console
 pytest ...
 ```
-4. ToDo:
+4. ToDo
 - add docker file to execute all tests in container
 
 - reduce boilerplate code in dynamic list elements with
-automatic search of property using dir() and filtering by "_locator"
-instead of indexing them in "member_locators" ppty
+  automatic search of property using dir() and filtering by "_locator"
+  instead of indexing them in "member_locators" ppty

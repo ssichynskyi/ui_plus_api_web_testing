@@ -2,8 +2,6 @@
 
 import pytest
 
-from tests.conftest import unauthorized_woo_api_client, unauthorized_wp_api_client
-
 
 @pytest.mark.environment
 def check_woo_api_server_responds(unauthorized_woo_api_client):

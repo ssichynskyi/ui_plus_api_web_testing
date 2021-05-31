@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-"""ToDo: rework reading environment params from command line"""
 
 import re
 import os

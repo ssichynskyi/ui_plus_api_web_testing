@@ -23,6 +23,7 @@ from framework.base import LoggingObject
 
 
 class Item(LoggingObject):
+
     def __init__(self, infra):
         """Base class for all UI elements.
 
@@ -148,41 +149,42 @@ class ButtonWithText(UIElement, ClickableMixin, TextualMixin):
 
 
 class ButtonWithIcon(UIElement, ClickableMixin):
-    """Button with only icon."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        """Button with only icon."""
         super().__init__(infra, locator, by)
 
 
 class EditableTextField(UIElement, ClickableMixin, EditableTextMixin):
-    """Editable text input field."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        """Editable text input field."""
         super().__init__(infra, locator, by)
 
 
 class TextLabel(UIElement, TextualMixin):
-    """Normal non-editable text label."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        """Normal non-editable text label."""
         super().__init__(infra, locator, by)
 
 
 class HyperLink(TextLabel, ClickableMixin):
-    """Hyperlink / clickable url."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        """Hyperlink / clickable url."""
         super().__init__(infra, locator, by)
 
 
 class SelectMenu(UIElement, SelectableMixin):
-    """Menu made from <select> / <option> tags."""
 
     def __init__(self, infra, locator, by=By.CSS_SELECTOR):
+        """Menu made from <select> / <option> tags."""
         super().__init__(infra, locator, by)
 
 
 class DynamicListElement(Item):
+
     def __init__(self, infra):
         """Base class for the element in the list of identical items.
 

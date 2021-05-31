@@ -1,5 +1,5 @@
 
-def pytest_report_header(config):
+def pytest_report_header():
     return """
     ------------------------
     EXECUTING WEB UI TESTS
